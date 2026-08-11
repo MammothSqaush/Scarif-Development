@@ -49,7 +49,7 @@ void loop()
     mqttConnect();
 
     // 2. Transmit periodic telemetry (if required by design specification)
-    int randomNumber = random(0, 100001); // Generate a random number between 0 and 100000
+    int randomNumber = random(0, 10000000001); // Generate a random number between 0 and 100000
     sendPeriodicUpdate("sensorData", String(randomNumber));
     unsigned long now = millis();
     if (now - lastUpdate > updateInterval)
