@@ -1,12 +1,14 @@
-
-
 // Set a unique identifier for your device before importing comms.h
 const char *mqttClient = "ESP32_Noah"; // EDIT THIS FIELD
-
 const char *mqttTopic;
 
 #include <Arduino.h>
 #include "comms.h"
+#include <Wire.h>
+#include "Adafruit_ADT7410.h"
+
+// Create the ADT7410 temperature sensor object
+Adafruit_ADT7410 tempsensor = Adafruit_ADT7410();
 
 void performActionBasedOnPayload(String payload)
 {
@@ -30,7 +32,7 @@ void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
     Serial.begin(9600);
-    
+
     wifiSetup();
     mqttSetup();
 
@@ -41,6 +43,15 @@ void setup()
     delay(1000);
 
     randomSeed(analogRead(A0)); // Seed using an unconnected analog pin for real randomness
+   
+    // Make sure the sensor is found, you can also pass in a different i2c
+    // address with tempsensor.begin(0x49) for example
+    if (!tempsensor.begin())
+    {
+        Serial.println("Couldn't find ADT7410!");
+        while (1)
+            ;
+    }
 }
 
 void loop()
@@ -49,8 +60,13 @@ void loop()
     mqttConnect();
 
     // 2. Transmit periodic telemetry (if required by design specification)
-    int randomNumber = random(0, 10000000001); // Generate a random number between 0 and 100000
-    sendPeriodicUpdate("sensorData", String(randomNumber));
+    
+    float tempInC = tempsensor.readTempC();
+    Serial.println(tempInC);
+
+
+    sendPeriodicUpdate("sensorData", String(tempInC));
+
     unsigned long now = millis();
     if (now - lastUpdate > updateInterval)
     {
