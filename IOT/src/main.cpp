@@ -62,7 +62,7 @@ void loop()
     // 2. Transmit periodic telemetry (if required by design specification)
     
     float tempInC = tempsensor.readTempC();
-    Serial.println(tempInC);
+    //Serial.println(tempInC);
 
 
     sendPeriodicUpdate("sensorData", String(tempInC));
