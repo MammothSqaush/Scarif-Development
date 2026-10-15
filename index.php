@@ -6,6 +6,8 @@ authorise(['admin', 'staff', 'student', 'guest', 'unauth']);
 
 
 
+
+
 session_start();
 
 $isLoggedIn = isset($_SESSION['user_id']);
