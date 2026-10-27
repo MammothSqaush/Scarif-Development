@@ -7,8 +7,13 @@ const char *mqttTopic;
 #include <Wire.h>
 #include "Adafruit_ADT7410.h"
 
+
 // Create the ADT7410 temperature sensor object
 Adafruit_ADT7410 tempsensor = Adafruit_ADT7410();
+
+#define ledRed 13
+#define ledYellow 12
+#define ledGreen 27
 
 void performActionBasedOnPayload(String payload)
 {
@@ -19,18 +24,34 @@ void performActionBasedOnPayload(String payload)
     if (payload.length() > 0 && payload[0] == '1')
     {
         Serial.println("Action: LED ON");
-        digitalWrite(LED_BUILTIN, HIGH);
+        digitalWrite(ledRed, HIGH);
+        digitalWrite(ledGreen, LOW);
+        digitalWrite(ledYellow, LOW);
+        delay(300);
+        digitalWrite(ledGreen, HIGH);
+        digitalWrite(ledRed, LOW);
+        digitalWrite(ledYellow, LOW);
+        delay(300);
+        digitalWrite(ledYellow, HIGH);
+        digitalWrite(ledGreen, LOW);
+        digitalWrite(ledRed, LOW);
+        delay(1000);
+        digitalWrite(ledYellow, LOW);
     }
     else
     {
         Serial.println("Action: LED OFF");
-        digitalWrite(LED_BUILTIN, LOW);
+        digitalWrite(ledRed, LOW);
+        digitalWrite(ledYellow, LOW);
+        digitalWrite(ledGreen, LOW);
     }
 }
 
 void setup()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(ledRed, OUTPUT);
+    pinMode(ledYellow, OUTPUT);
+    pinMode(ledGreen, OUTPUT);
     Serial.begin(9600);
 
     wifiSetup();
